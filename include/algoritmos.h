@@ -10,14 +10,12 @@
 #include <string>
 #include <unordered_map>
 
+int fluxoMaximo(std::unordered_map<std::string, Vertice*>& grafo, Vertice* fonte, Vertice* sumidouro);
 int distancia(Vertice* u, Vertice* v,
               std::unordered_map<std::string, Vertice*>& grafo);
-void pontosDeArticulacao(Vertice *u, int& tempo, int& filhos,
-                        std::unordered_map<std::string, Vertice*>& grafo);
-void pontes(Vertice *u, int& tempo,
-            std::unordered_map<std::string, Vertice*>& grafo);
 void reiniciaVerices(std::unordered_map<std::string, Vertice*>& grafo);
-int verificaDistancia(Vertice* u, Vertice* v,
-                      std::unordered_map<std::string, Vertice*>& grafo);
+void montaResidual(std::unordered_map<std::string, Vertice*>& grafo, std::unordered_map<std::string, Vertice*>** grafo_residual);
+int encontraGargalo(std::unordered_map<std::string, Vertice*>& grafo, Vertice* fonte, bool& tem_caminho);
+void setFluxos(std::unordered_map<std::string, Vertice*>& grafo);
 
 #endif //ALGORITMOS_H

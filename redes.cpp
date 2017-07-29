@@ -16,7 +16,7 @@ int main(int argc, char** argv){
   Vertice* fonte;
   Vertice* sumidouro;
 
-  std::cout << "Lendo grafo: " << nome_arquivo << std::endl ;
+  std::cout << "Lendo grafo: " << nome_arquivo << std::endl;
   leGrafo(nome_arquivo, fonte, sumidouro);
 
   //Printa o grafo
@@ -24,8 +24,9 @@ int main(int argc, char** argv){
     v.second->printVizinhos();
   }
 
-  //Excutando algoritmo de caminho mínimo
+  //Excutando algoritmo de fluxo máximo
   reiniciaVerices(grafo);
+  fluxoMaximo(grafo, fonte, sumidouro);
 
   std::cout << std::endl << "Fim" << std::endl;
   return 0;

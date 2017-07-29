@@ -9,6 +9,13 @@ Vertice::Vertice(std::string& nome){
   nome_ = nome;
 }
 
+Vertice::~Vertice(){
+}
+
+void Vertice::setRetorno(bool retorno){
+    retorno_ = retorno;
+}
+
 void Vertice::setDescobrimento(int descobrimento){
   descobrimento_ = descobrimento;
 }
@@ -26,7 +33,7 @@ void Vertice::setLow(int low){
 }
 
 void Vertice::addVizinho(Vertice* vertice, int peso){
-  vizinhos_[vertice] = peso;
+  vizinhos_[vertice] = std::make_pair(peso, 0);
 }
 
 void Vertice::setCor(Cor cor){
@@ -35,6 +42,10 @@ void Vertice::setCor(Cor cor){
 
 void Vertice::setPredecessor(Vertice* predecessor){
   predecessor_ = predecessor;
+}
+
+bool Vertice::isRetorno(){
+    return retorno_;
 }
 
 int Vertice::getDescobrimento(){
@@ -57,7 +68,7 @@ std::string& Vertice::getNome(){
   return nome_;
 }
 
-std::unordered_map<Vertice*, int>& Vertice::getVizinhos(){
+std::unordered_map<Vertice*, std::pair<int, int>>& Vertice::getVizinhos(){
   return vizinhos_;
 }
 
@@ -75,7 +86,7 @@ void Vertice::printVizinhos(){
 
   for(auto& v : vizinhos_){
     std::cout << "\t" << v.first->getNome() << std::endl;
-    std::cout << "\t" << v.second << std::endl;
+    std::cout << "\t" << v.second.first << std::endl;
     i++;
   }
 }

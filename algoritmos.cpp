@@ -9,6 +9,65 @@
 #include <iostream>
 #include <algorithm>
 
+int fluxoMaximo(std::unordered_map<std::string, Vertice*>& grafo, Vertice* fonte, Vertice* sumidouro){
+    int fluxo_maximo = 0;
+    int gargalo = 0;
+    bool tem_caminho = true;
+
+    std::unordered_map<std::string, Vertice*>* grafo_residual;
+
+    while(tem_caminho){
+        montaResidual(grafo, &grafo_residual);
+        distancia((*grafo_residual)[fonte->getNome()], (*grafo_residual)[sumidouro->getNome()], *grafo_residual);
+
+        gargalo = encontraGargalo(*grafo_residual, (*grafo_residual)[fonte->getNome()], tem_caminho);
+
+        if(tem_caminho){
+            fluxo_maximo = fluxo_maximo + gargalo;
+            setFluxos(grafo);
+        }
+    }
+    
+    return fluxo_maximo;
+}
+
+void montaResidual(std::unordered_map<std::string, Vertice*>& grafo, std::unordered_map<std::string, Vertice*>** grafo_residual){
+    if(*grafo_residual){
+        for(auto& a : (**grafo_residual)){
+            free(a.second);
+        }
+        free(*grafo_residual);
+    }
+
+    (*grafo_residual) = new std::unordered_map<std::string, Vertice*>();
+
+    for(auto& a : grafo){
+        Vertice* origem = a.second;
+
+        for(auto& b : origem->getVizinhos()){
+            Vertice* destino = b.first;
+            std::pair<int, int> capacidade_fluxo = b.second;
+
+            if((*grafo_residual)->find(origem->getNome()) == (*grafo_residual)->end()){
+                (**grafo_residual)[origem->getNome()] = new Vertice(origem->getNome());
+                origem = (**grafo_residual)[origem->getNome()];
+            }
+            if((*grafo_residual)->find(destino->getNome()) == (*grafo_residual)->end()){
+                (**grafo_residual)[destino->getNome()] = new Vertice(destino->getNome());
+                destino = (**grafo_residual)[destino->getNome()];
+            }
+
+            if(capacidade_fluxo.second > 0){
+                destino->addVizinho(origem, capacidade_fluxo.second );
+            }
+
+            if(capacidade_fluxo.first == capacidade_fluxo.second){
+
+            }
+        }
+    }
+}
+
 int distancia(Vertice* u, Vertice* v, std::unordered_map<std::string, Vertice*>& grafo){
   std::queue<Vertice*> fila;
   Vertice *atual;
@@ -35,73 +94,14 @@ int distancia(Vertice* u, Vertice* v, std::unordered_map<std::string, Vertice*>&
   return v->getDistancia();
 }
 
-void pontosDeArticulacao(Vertice *u, int& tempo, int& filhos,
-                        std::unordered_map<std::string, Vertice*>& grafo){
-  tempo = tempo + 1;
-  u->setCor(Cor::CINZA);
-  u->setLow(tempo);
-  u->setDescobrimento(tempo);
+int encontraGargalo(std::unordered_map<std::string, Vertice*>& grafo, Vertice* fonte, bool& tem_caminho){
+    int gargalo = 0;
 
-  for(auto& a : u->getVizinhos()){
-    Vertice* v = a.first;
-    if(v->getCor() == Cor::BRANCO){
-      if(u->getPredecessor() == NULL){
-        filhos = filhos + 1;
-      }
-      v->setPredecessor(u);
-      pontosDeArticulacao(v, tempo, filhos, grafo);
-      if(u->getPredecessor() == NULL){
-        if(filhos > 1){
-          std::cout << u->getNome() << " é ponto de articulação" << std::endl;
-        }
-      }
-      else{
-        u->setLow(std::min(u->getLow(), v->getLow()));
-        if(v->getLow() >= u->getDescobrimento()){
-          std::cout << u->getNome() << " é ponto de articulação" << std::endl;
-        }
-      }
-    }
-    else{
-      if((v != u->getPredecessor()) &&
-        (v->getDescobrimento() < u->getDescobrimento())){
-          u->setLow(std::min(u->getLow(), v->getDescobrimento()));
-        }
-    }
-  }
-
-  u->setCor(Cor::PRETO);
-  tempo = tempo + 1;
-  u->setTermino(tempo);
+    return gargalo;
 }
 
-void pontes(Vertice *u, int& tempo,
-            std::unordered_map<std::string, Vertice*>& grafo){
-  tempo++;
-  u->setCor(Cor::CINZA);
-  u->setDescobrimento(tempo);
-  u->setLow(u->getDescobrimento());
+void setFluxos(std::unordered_map<std::string, Vertice*>& grafo){
 
-  for(auto& a : u->getVizinhos()){
-    Vertice* v = a.first;
-    if(v->getCor() == Cor::BRANCO){
-      v->setPredecessor(u);
-      pontes(v,tempo,grafo);
-      u->setLow(std::min(u->getLow(), v->getLow()));
-      if (v->getLow() > u->getDescobrimento()){
-        std::cout << u->getNome() << " é uma ponte para " << v->getNome() << std::endl;
-      }
-    }
-    else{
-      if((v != u->getPredecessor()) && (v->getDescobrimento() < u->getDescobrimento())){
-        u->setLow(std::min(u->getLow(),v->getDescobrimento()));
-      }
-    }
-  }
-
-  u->setCor(Cor::PRETO);
-  tempo++;
-  u->setTermino(tempo);
 }
 
 void reiniciaVerices(std::unordered_map<std::string, Vertice*>& grafo){
