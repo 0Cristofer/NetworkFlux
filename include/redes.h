@@ -22,6 +22,6 @@ std::unordered_map<std::string, Vertice*> grafo;
 std::unordered_map<std::string, Vertice*>* grafo_residual = NULL;
 
 bool verificaArgs(int argc);
-void leGrafo(std::string& nome_file, Vertice* fonte, Vertice* sumidouro);
+void leGrafo(std::string& nome_file, Vertice** fonte, Vertice** sumidouro);
 
 #endif //REDES_H

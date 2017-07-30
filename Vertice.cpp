@@ -12,10 +12,6 @@ Vertice::Vertice(std::string& nome){
 Vertice::~Vertice(){
 }
 
-void Vertice::setRetorno(bool retorno){
-    retorno_ = retorno;
-}
-
 void Vertice::setDescobrimento(int descobrimento){
   descobrimento_ = descobrimento;
 }
@@ -32,8 +28,8 @@ void Vertice::setLow(int low){
   low_ = low;
 }
 
-void Vertice::addVizinho(Vertice* vertice, int peso){
-  vizinhos_[vertice] = std::make_pair(peso, 0);
+void Vertice::addVizinho(Vertice* vertice, int peso, bool retorno){
+  vizinhos_[vertice] = std::make_tuple(peso, 0, retorno);
 }
 
 void Vertice::setCor(Cor cor){
@@ -42,10 +38,6 @@ void Vertice::setCor(Cor cor){
 
 void Vertice::setPredecessor(Vertice* predecessor){
   predecessor_ = predecessor;
-}
-
-bool Vertice::isRetorno(){
-    return retorno_;
 }
 
 int Vertice::getDescobrimento(){
@@ -68,7 +60,7 @@ std::string& Vertice::getNome(){
   return nome_;
 }
 
-std::unordered_map<Vertice*, std::pair<int, int>>& Vertice::getVizinhos(){
+std::unordered_map<Vertice*, std::tuple<int, int, bool>>& Vertice::getVizinhos(){
   return vizinhos_;
 }
 
@@ -86,7 +78,8 @@ void Vertice::printVizinhos(){
 
   for(auto& v : vizinhos_){
     std::cout << "\t" << v.first->getNome() << std::endl;
-    std::cout << "\t" << v.second.first << std::endl;
+    std::cout << "\t" << "Capacidade: " << std::get<CAPACIDADE>(v.second) << " Fluxo: " <<
+        std::get<FLUXO>(v.second) << " Retorno: " << std::get<RETORNO>(v.second)<< std::endl;
     i++;
   }
 }

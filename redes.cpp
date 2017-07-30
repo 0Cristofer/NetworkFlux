@@ -17,16 +17,11 @@ int main(int argc, char** argv){
   Vertice* sumidouro;
 
   std::cout << "Lendo grafo: " << nome_arquivo << std::endl;
-  leGrafo(nome_arquivo, fonte, sumidouro);
-
-  //Printa o grafo
-  for(std::pair<std::string, Vertice*> v : grafo){
-    v.second->printVizinhos();
-  }
+  leGrafo(nome_arquivo, &fonte, &sumidouro);
 
   //Excutando algoritmo de fluxo máximo
   reiniciaVerices(grafo);
-  fluxoMaximo(grafo, fonte, sumidouro);
+  std::cout << "Flux máximo: " << fluxoMaximo(grafo, fonte, sumidouro) << std::endl;
 
   std::cout << std::endl << "Fim" << std::endl;
   return 0;
@@ -42,7 +37,7 @@ bool verificaArgs(int argc){
 }
 
 //Lê um grafo dado o nome do arquivo
-void leGrafo(std::string& nome_file, Vertice* fonte, Vertice* sumidouro){
+void leGrafo(std::string& nome_file, Vertice** fonte, Vertice** sumidouro){
   std::ifstream input_file;
   std::string linha, origem, destino, peso, s, t;
 
@@ -72,11 +67,11 @@ void leGrafo(std::string& nome_file, Vertice* fonte, Vertice* sumidouro){
       }
 
       //Adiciona o destino como vizinho da origem
-      grafo[origem]->addVizinho(grafo[destino], stoi(peso));
+      grafo[origem]->addVizinho(grafo[destino], stoi(peso), false);
     }
 
-    fonte = grafo[s];
-    sumidouro = grafo[t];
+    *fonte = grafo[s];
+    *sumidouro = grafo[t];
   }
   else{
     std::cout<< "Arquivo inválido" << std::endl;

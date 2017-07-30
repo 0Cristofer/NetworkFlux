@@ -5,6 +5,10 @@
 #ifndef VERTICE_H
 #define VERTICE_H
 
+#define CAPACIDADE 0
+#define FLUXO 1
+#define RETORNO 2
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -19,38 +23,35 @@ public:
   Vertice(std::string& nome);
   ~Vertice();
 
-  void setRetorno(bool retorno);
   void setDescobrimento(int descobrimento);
   void setTermino(int termino);
   void setDistancia(int distancia);
   void setLow(int low);
 
-  void addVizinho(Vertice* vertice, int peso);
+  void addVizinho(Vertice* vertice, int peso, bool retorno);
   void setCor(Cor cor);
   void setPredecessor(Vertice* vertice);
 
-  bool isRetorno();
   int getDescobrimento();
   int getTermino();
   int getDistancia();
   int getLow();
 
   std::string& getNome();
-  std::unordered_map<Vertice*, std::pair<int, int>>& getVizinhos();
+  std::unordered_map<Vertice*, std::tuple<int, int, bool>>& getVizinhos();
   Cor getCor();
   Vertice* getPredecessor();
 
   void printVizinhos();
   void limparDados();
 private:
-  bool retorno_ = false;
   int descobrimento_ = 0;
   int termino_ = 0;
   int distancia_ = 0;
   int low_ = 0;
 
   std::string nome_;
-  std::unordered_map<Vertice*, std::pair<int, int>> vizinhos_;
+  std::unordered_map<Vertice*, std::tuple<int, int, bool>> vizinhos_;
   Cor cor_ = Cor::BRANCO;
   Vertice* predecessor_ = NULL;
 };
